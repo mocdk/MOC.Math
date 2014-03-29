@@ -1,0 +1,22 @@
+{
+	"name": "MOC/Math",
+	"type":"library",
+	"description": "Mathematical library for PHP. Performs",
+	"version":null,
+	"authors": [
+		{
+			"name": "Jan-Erik Revsbech",
+			"email": "janerik@moc.net",
+			"role": "Developer"
+		}, {
+			"name": "Andres Angulo",
+			"email": "andres@moc.net",
+			"role": "Developer"
+		}
+	],
+	"autoload": {
+		"psr-0": {
+			"MOC\\Math": "Classes"
+		}
+	}
+}
