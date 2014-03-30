@@ -39,7 +39,7 @@ interface MathematicalFunctionInterface {
 	 * Return the name of this function
 	 * @return string
 	 */
-	public static function getName();
+	public function getName();
 
 	/**
 	 * Return the parameters which describe this curve. Will return an array of floats
@@ -48,4 +48,5 @@ interface MathematicalFunctionInterface {
 	 */
 	public function getParameters();
 
+	public function __toString();
 }

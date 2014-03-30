@@ -7,7 +7,6 @@ use TYPO3\Flow\Cache\Backend\NullBackend;
 
 /**
  * Class GaussianFunction
- * Given a set of parameters, evaluates to a gaussian distribution
  *
  * @package MOC\Math
  */
@@ -81,7 +80,7 @@ class GaussianFunction implements MathematicalFunctionInterface  {
 	 * @return string
 	 */
 	public function __toString() {
-		$string = 'y = ' . $this->peakHeight . 'exp(-(x - ' .  $this->peakPosition . ')^2 / ' . (2 * pow($this->width, 2)) . ')';
+		$string = 'y(x) = ' . $this->peakHeight . 'exp(-(x - ' .  $this->peakPosition . ')^2 / ' . (2 * pow($this->width, 2)) . ')';
 		if ($this->offset > 0) {
 			$string .= ' + ' . $this->offset;
 		}
@@ -101,7 +100,7 @@ class GaussianFunction implements MathematicalFunctionInterface  {
 	/**
 	 * @return string
 	 */
-	public static function getName() {
+	public function getName() {
 		return 'Gausian function';
 	}
 

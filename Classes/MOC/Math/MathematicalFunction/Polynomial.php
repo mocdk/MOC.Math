@@ -89,7 +89,7 @@ class Polynomial implements LinearCombinationOfFunctions  {
 	 * Return the name of this function
 	 * @return string
 	 */
-	public static function getName() {
+	public function getName() {
 		return 'Polynomial of the ' . $this->order . ' order';
 	}
 
@@ -100,6 +100,23 @@ class Polynomial implements LinearCombinationOfFunctions  {
 	 */
 	public function getParameters() {
 		return $this->parameters;
+	}
+
+	/**
+	 * @return string
+	 */
+	function __toString() {
+		$precision = 4;
+		$output = 'y(x) = ' . round($this->parameters[0], $precision);
+		if ($this->order > 0) {
+			$output .= ' + ' . round($this->parameters[1], $precision) . 'x';
+		}
+		if ($this->order > 1) {
+			for ($j=2; $j <= $this->order; $j++) {
+				$output .= ' + ' . round($this->parameters[$j],$precision) . 'x^' . ($j);
+			}
+		}
+		return $output;
 	}
 
 

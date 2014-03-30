@@ -12,9 +12,27 @@ use MOC\Math\MathematicalFunction\MathematicalFunctionInterface;
  * Class FittingEngine
  *
  * Mathematical fitting engine. This particular class uses the Levenberg-Marquardt method to solve the non-lineary
- * fitting of data to functions in a non-linear way.
+ * fitting of data to functions in a non-linear way, and Gauss-Jordan elimination for the case of linear functions.
  *
- * @package MOC\Math\Fitting
+ * The term linear relates to dependency of the coefficients of the basisfunctions. The individual functions can depend
+ * wildly un-lineary on x. So the fit is to a linear combinations of basisfunctions.
+ *
+ * Ex: A (probably well known) lineary function could be y(x) = a + bx og y(x), or y(y) = a + bx + cx^2 or perhaps a
+ * lineary combinations of harmonics.
+ *
+ * y(x) = a * cos(x) + b*cos(x)
+ *
+ * Notice that many function can be transformed into a linear combinations of basisfunctions.
+ *
+ * For non-linery combination off functions, antoher approach is needed. An example of a non-linear combination of
+ * functions is a Gauss
+ *
+ * y(x) = a + b * exp(-(x-c)^2 / d
+ *
+ * These two types of functions are represented by the LinearCombinationOfFunctions and UnLinearCombinationOfFunctions
+ * interfaces provided with this package.
+ *
+ * @package MOC\Math
  */
 class FittingEngine {
 
@@ -62,13 +80,13 @@ class FittingEngine {
 			throw new \Exception('At least one parameters shoud be fitted for');
 		}
 
-		// Initialize covar and beta variable used for the solutions
+			// Initialize covar and beta variable used for the solutions
 		$covar = Matrix::emptyMatrix($numberOfParameteresToFit, $numberOfParameteresToFit);
 		$beta = Matrix::emptyMatrix($numberOfParameteresToFit,1);
 
 		foreach ($data->getData() as $i => $point) {
 
-			// Evaluate each of the basis functions in point X_i
+				// Evaluate each of the basis functions in point X_i
 			for ($j = 0; $j < $numberOfParameters; $j++) {
 				$afunc[$j] = $mathematicalFunction->evaluateNthBasisFunctionAtPoint($point[0], $j);
 			}
@@ -81,7 +99,7 @@ class FittingEngine {
 				}
 			}
 
-			// Calculate lower triangle of the Covariance matrix
+				// Calculate lower triangle of the Covariance matrix
 			$sig2i = 1.0 / pow($data->getErrorAtIndex($i),2);
 			$j = 0;
 			for ($l = 0; $l < $numberOfParameters; $l++) {
@@ -90,36 +108,24 @@ class FittingEngine {
 					$k = 0;
 					for ($m=0; $m <= $l; $m++) {
 						if ($parametersToFitFor[$m] === TRUE) {
-							$covar->setValueAtPoint($j, $k, $covar->getValueAtPosition($j, $k) + $wt * $afunc[$m]);
+							$covar->setValueAtPosition($j, $k, $covar->getValueAtPosition($j, $k) + $wt * $afunc[$m]);
 							$k++;
 						}
 					}
-					$beta->setValueAtPoint($j, 0, $beta->getValueAtPosition($j, 0) + $wt * $ym);
+					$beta->setValueAtPosition($j, 0, $beta->getValueAtPosition($j, 0) + $wt * $ym);
 					$j++;
 				}
 			}
+
 		}
-		 // Mirror the covar matrix in the diagonal
+			// Mirror the covar matrix in the diagonal
 		for ($j = 1; $j < $numberOfParameters; $j++) {
 			for ($k = 0; $k < $j; $k++) {
-				$covar->setValueAtPoint($k, $j, $covar->getValueAtPosition($j, $k));
+				$covar->setValueAtPosition($k, $j, $covar->getValueAtPosition($j, $k));
 			}
 		}
-		/*
-		print "Covariance matrix" . PHP_EOL;
-		print $covar;
-		print "Beta: " . PHP_EOL;
-		print $beta;
-		*/
 		$solver = new GaussJordan();
 		$solver->solve($covar, $beta);
-		/*print "Covar after solve" . PHP_EOL;
-		print $covar;
-		print "Beta after solve" . PHP_EOL;
-		print $beta;
-		*/
-
-		//
 		$a = array();
 		$j=0;
 		for ($l=0; $l < $numberOfParameters; $l++) {

@@ -1,10 +1,17 @@
 <?php
 namespace MOC\Math;
+use MOC\Math\Exception\GeneralMathException;
+use MOC\Math\Exception\MatrixIndexOutOfBoundsException;
 
 /**
  * Class Matrix
  *
- * Reprentation of a matrix of floats. Data is internaly stores as a two dimensional rows-first array.
+ * Representation of a matrix of floats.
+ * Data is internally stored as a two dimensional rows-first array.
+ *
+ * Includes various function on the matrix, like multiplication, but also methods that change the array like multiply
+ * row by number, exchange rows etc. Generally methods that change the internal matrix, returns a reference to itself
+ * and throws Exceptions if something goes wrong.
  *
  * @package MOC\Math
  */
@@ -39,6 +46,8 @@ class Matrix {
 	}
 
 	/**
+	 * Factory function for creating a MxM matrix with diagonal elements of 1 and all other set to 0
+	 *
 	 * @param integer $dimensions
 	 * @return Matrix
 	 */
@@ -53,7 +62,7 @@ class Matrix {
 	}
 
 	/**
-	 * Create a new MxN matrix initliazed with a certain value (default is 0.00)
+	 * Create a new MxN matrix initialized with a certain value (default is 0.00)
 	 *
 	 * @param integer $rows
 	 * @param integer $columns
@@ -70,6 +79,8 @@ class Matrix {
 	}
 
 	/**
+	 * Return the number of rows of this matrix
+	 *
 	 * @return int
 	 */
 	public function getNumberOfRows() {
@@ -77,6 +88,8 @@ class Matrix {
 	}
 
 	/**
+	 * Return the numver of columns for this matrix
+	 *
 	 * @return int
 	 */
 	public function getNumberOfColumns() {
@@ -87,32 +100,37 @@ class Matrix {
 	}
 
 	/**
+	 * Return the value at a certain position in the matrix.
+	 *
 	 * @param integer $row
 	 * @param integer $column
 	 * @return float
+	 * @throws MatrixIndexOutOfBoundsException
 	 */
 	function getValueAtPosition($row, $column) {
 		if ($column > $this->getNumberOfCOlumns()) {
-			throw new \Exception('Trying to access column ' . $column . ' of a matrix with only ' . $this->getNumberOfCOlumns() . ' columns');
+			throw new MatrixIndexOutOfBoundsException('Trying to access column ' . $column . ' of a matrix with only ' . $this->getNumberOfCOlumns() . ' columns');
 		}
 		if ($row > $this->getNumberOfRows()) {
-			throw new \Exception('Trying to access row ' . $row . ' of a matrix with only ' . $this->getNumberOfRows() . ' rows');
+			throw new MatrixIndexOutOfBoundsException('Trying to access row ' . $row . ' of a matrix with only ' . $this->getNumberOfRows() . ' rows');
 		}
 		return $this->data[$row][$column];
 	}
 
 	/**
+	 * Set the value of the matrix at a certain position
+	 *
 	 * @param integer $row
 	 * @param integer $column
 	 * @param float $value
-	 * @throws \Exception
+	 * @throws MatrixIndexOutOfBoundsException
 	 */
-	function setValueAtPoint($row, $column, $value) {
+	function setValueAtPosition($row, $column, $value) {
 		if ($column > $this->getNumberOfCOlumns()) {
-			throw new \Exception('Trying to set column ' . $column . ' of a matrix with only ' . $this->getNumberOfCOlumns() . ' columns');
+			throw new MatrixIndexOutOfBoundsException('Trying to set column ' . $column . ' of a matrix with only ' . $this->getNumberOfCOlumns() . ' columns');
 		}
 		if ($row > $this->getNumberOfRows()) {
-			throw new \Exception('Trying to set row ' . $row . ' of a matrix with only ' . $this->getNumberOfRows() . ' rows');
+			throw new MatrixIndexOutOfBoundsException('Trying to set row ' . $row . ' of a matrix with only ' . $this->getNumberOfRows() . ' rows');
 		}
 		$this->data[$row][$column] = $value;
 	}
@@ -136,10 +154,11 @@ class Matrix {
 	 *
 	 * @param Vector $vector
 	 * @return Matrix
+	 * @throws GeneralMathException
 	 */
 	public function multiplyWithVectorFromRight(Vector $vector) {
 		if ($vector->getLength() !== $this->getNumberOfColumns()) {
-			throw new \Exception('Unable to multiply a matrix with ' . $this->getNumberOfColumns() . ' with a vector of length ' . $vector->getLength());
+			throw new GeneralMathException('Unable to multiply a matrix with ' . $this->getNumberOfColumns() . ' with a vector of length ' . $vector->getLength());
 		}
 		$newData = array();
 		foreach ($this->data as $row) {
@@ -153,6 +172,8 @@ class Matrix {
 	}
 
 	/**
+	 * Return the raw data array
+	 *
 	 * @return array
 	 */
 	public function getAsArray() {
@@ -162,7 +183,10 @@ class Matrix {
 	/**
 	 * Compare two matrixes
 	 *
+	 * Each value of the matrix is compared (non-stric using ==) agains each other. Returns TRUE if the matrices are equal.
+	 *
 	 * @param Matrix $matrix
+	 * @return boolean
 	 */
 	public function equals(Matrix $matrix) {
 		$isEqual = TRUE;
@@ -185,14 +209,14 @@ class Matrix {
 	/**
 	 * Compute the inverse.
 	 *
-	 * Caclucates it by Gauss Jordan elimination with partial pivoting.
+	 * Calculates it by Gauss Jordan elimination with partial pivoting.
 	 *
 	 * @return Matrix
-	 * @throws \Exception
+	 * @throws GeneralMathException
 	 */
 	public function getInverse() {
 		if ($this->getNumberOfRows() != $this->getNumberOfCOlumns()) {
-			throw new \Exception('Unable to calculate inverse of non-square matrix');
+			throw new GeneralMathException('Unable to calculate inverse of non-square matrix');
 		}
 		$matrix = clone($this);
 		$matrix2 = Matrix::identityMatrix($this->getNumberOfRows());
@@ -213,10 +237,11 @@ class Matrix {
 	 * @param float $value Value to add to the matrix position Default is 0.0
 	 * @param boolean $addRowsAndColumnsBefore If set to TRUE, the elements will be added before (both row- and columnwise. Default is to add them after.
 	 * @return Matrix reference to it self
+	 * @throws GeneralMathException
 	 */
 	public function expandToSize($newNumberOfColumns, $newNumberOfRows, $value = 0.00, $addRowsAndColumnsBefore = FALSE) {
 		if ($newNumberOfColumns < $this->getNumberOfColumns() || $newNumberOfRows < $this->getNumberOfRows()) {
-			throw new \Exception('Can not shrink matrix');
+			throw new GeneralMathException('Can not shrink matrix');
 		}
 
 		for ($i = 0; $i < $newNumberOfRows; $i++) {
@@ -273,6 +298,7 @@ class Matrix {
 	 * Interchange two rows of the matrix. Changes the matrix!
 	 *
 	 * This operation changes the actual object, and return itself in order to be able to chain it.
+	 *
 	 * @param $row1
 	 * @param $row2
 	 * @return Matrix
@@ -287,19 +313,20 @@ class Matrix {
 	/**
 	 * Multiply a column of a matrix by a non-zero number
 	 *
-	 * Used for matrix diagonlization
+	 * Used for matrix diagonalization
 	 *
 	 * @param integer $row
 	 * @param float $number
 	 * @return Matrix
-	 * @throws \Exception
+	 * @throws GeneralMathException
+	 * @throws MatrixIndexOutOfBoundsException
 	 */
 	public function multiplyRowByNumber($row, $number) {
 		if ($number === 0.00) {
-			throw new \Exception('Unable to multiply row af matrix by 0');
+			throw new GeneralMathException('Unable to multiply row af matrix by 0');
 		}
 		if ($row < 0 || $row > $this->getNumberOfRows()) {
-				throw new \Exception('Trying to modify the ' . $row . 'th row of a matrix with ' . $this->getNumberOfRows() . ' rows');
+				throw new MatrixIndexOutOfBoundsException('Trying to modify the ' . $row . 'th row of a matrix with ' . $this->getNumberOfRows() . ' rows');
 		}
 		for ($l= 0; $l < $this->getNumberOfCOlumns(); $l++) {
 			$this->data[$row][$l] = $this->data[$row][$l] * $number;
@@ -314,14 +341,14 @@ class Matrix {
 	 * @param integer $rowToMultiplyWith The row to change.
 	 * @param integer $rowToAddTo The row to multiply with
 	 * @return Matrix
-	 * @throws \Exception
+	 * @throws MatrixIndexOutOfBoundsException
 	 */
 	public function addMultipleOfOtherRowToRow($multiple, $rowToMultiplyWith, $rowToAddTo) {
 		if ($rowToMultiplyWith < 0 || $rowToMultiplyWith > $this->getNumberOfRows()) {
-			throw new \Exception('Trying to modify the ' . $rowToMultiplyWith . 'th row of a matrix with ' . $this->getNumberOfRows() . ' rows');
+			throw new MatrixIndexOutOfBoundsException('Trying to modify the ' . $rowToMultiplyWith . 'th row of a matrix with ' . $this->getNumberOfRows() . ' rows');
 		}
 		if ($rowToAddTo < 0 || $rowToAddTo > $this->getNumberOfRows()) {
-			throw new \Exception('Trying to modify the ' . $rowToAddTo . 'th row of a matrix with ' . $this->getNumberOfRows() . ' rows');
+			throw new MatrixIndexOutOfBoundsException('Trying to modify the ' . $rowToAddTo . 'th row of a matrix with ' . $this->getNumberOfRows() . ' rows');
 		}
 		for ($l= 0; $l < $this->getNumberOfColumns(); $l++) {
 			$this->data[$rowToAddTo][$l] = $this->data[$rowToAddTo][$l] + $this->data[$rowToMultiplyWith][$l] * $multiple;

@@ -8,11 +8,10 @@ namespace MOC\Math\MathematicalFunction;
  *
  *  y = sum_[i:1..n] (a[i] * x^(i-1))
  *
- * Or perhaps a sum of sines and cosines
+ * , a sum of sines and cosines or any other function that can be represented as linear combinations of
+ * basis functions.
  *
- * Or any other function that can be represented as linear combinations of basis functions
- *
- * Note that the individual basisfunction can be wildly unlinear with respect to X. The linearity here, is in
+ * Note that the individual basisfunctions can be wildly unlinear with respect to x. The linearity here, is in
  * respect to its dependence of the parameters a[1..n]
  *
  * @package MOC\Math

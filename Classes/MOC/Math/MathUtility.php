@@ -1,15 +1,24 @@
 <?php
 namespace MOC\Math;
 
-
 use Niras\Meia\Statistics\Data\DataSeries;
 use MOC\Math\MathematicalFunction\MathematicalFunctionInterface;
 
+/**
+ * Class MathUtility
+ *
+ * Utility class for various math operations
+ *
+ * @package MOC\Math
+ */
 class MathUtility {
 
 	/**
-	 * @param MathematicalFunctionInterface $
-	 * @param array $points
+	 * Given a mathematical function and an array of floats, evaluate the function if each point, and return a DataSeries
+	 * object.
+	 *
+	 * @param MathematicalFunctionInterface $mathematicalFunction
+	 * @param array<float> $points An array of floats.
 	 * @return DataSeries
 	 */
 	public static function evaluateFunctionAtPoints(MathematicalFunctionInterface $mathematicalFunction, array $points) {
@@ -22,10 +31,13 @@ class MathUtility {
 	}
 
 	/**
+	 * Given a mathematical function, a range of min and max value and desired total number if points - return a DataSeries
+	 * with the function evaluated in all points within the range.
+	 *
 	 * @param MathematicalFunctionInterface $mathematicalFunction
-	 * @param $min
-	 * @param $max
-	 * @param $numberOfPoints
+	 * @param float $min The minimum value to evalutate the function in
+	 * @param float $max The maximum value to evaluate the function in
+	 * @param integer $numberOfPoints Number of points to evalue the function in between $min and $max
 	 * @return DataSeries
 	 */
 	public static function evaluateFunctionInInterval(MathematicalFunctionInterface $mathematicalFunction, $min, $max, $numberOfPoints) {
@@ -38,16 +50,4 @@ class MathUtility {
 		return self::evaluateFunctionAtPoints($mathematicalFunction, $xValues);
 	}
 
-	/**
-	 * @todo: Move to expand function
-	 * @param $covar Existing covariance matrix
-	 * @param integer $ma Dimension of the new covariant matrix
-	 * @param $ia
-	 * @param integer $mfit Number of paramters to fit
-	 * @return Matrix
-	 */
-	public static function covsrt(Matrix $covar, $ma, $ia, $mfit) {
-		$newCovar = Matrix::emptyMatrix($ma, $ma);
-		//for($i = )
-	}
 }
