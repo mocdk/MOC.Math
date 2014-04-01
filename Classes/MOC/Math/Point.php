@@ -4,6 +4,10 @@ namespace MOC\Math;
 /**
  * Class Point
  *
+ * Representation of a 2 dimensional point in a set of data.
+ * Each point consists of an X and a Y value, and possibly an error in Y.
+ * X,Y and the optional error must be numbers (integer, floats etc.).
+ *
  * @package MOC\Math
  */
 class Point {
@@ -19,12 +23,19 @@ class Point {
 	protected $y = 0.0;
 
 	/**
+	 * @var float
+	 */
+	protected $error = 0.00;
+
+	/**
 	 * @param float $x
 	 * @param float $y
+	 * @param $error Optional error in y. Default is 0.00
 	 */
-	public function __construct($x, $y) {
+	public function __construct($x, $y, $error = 0.00) {
 		$this->x = $x;
 		$this->y = $y;
+		$this->error = $error;
 	}
 
 	/**
@@ -39,6 +50,13 @@ class Point {
 	 */
 	public function getY() {
 		return $this->y;
+	}
+
+	/**
+	 * @return float
+	 */
+	public function getError() {
+		return $this->error;
 	}
 
 }

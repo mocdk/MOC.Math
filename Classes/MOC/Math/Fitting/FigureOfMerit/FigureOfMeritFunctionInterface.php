@@ -1,8 +1,6 @@
 <?php
-
 namespace MOC\Math\Fitting\FigureOfMerit;
 
-use Niras\Meia\Statistics\Data\DataSeries;
 use MOC\Math\MathematicalFunction\MathematicalFunctionInterface;
 
 /**
@@ -24,4 +22,5 @@ interface FigureOfMeritFunctionInterface {
 	 * @return mixed
 	 */
 	public function calculate(DataSeries $data, MathematicalFunctionInterface $mathematicalFunction);
+
 }

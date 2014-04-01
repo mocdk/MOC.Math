@@ -54,7 +54,7 @@ class Matrix {
 	public static function identityMatrix($dimensions) {
 		$data = array();
 		for ($i = 0; $i < $dimensions; $i++) {
-			$row = array_fill(0,$dimensions, 0.00);
+			$row = array_fill(0, $dimensions, 0.00);
 			$row[$i] = 1.00;
 			$data[] = $row;
 		}
@@ -107,7 +107,7 @@ class Matrix {
 	 * @return float
 	 * @throws MatrixIndexOutOfBoundsException
 	 */
-	function getValueAtPosition($row, $column) {
+	public function getValueAtPosition($row, $column) {
 		if ($column > $this->getNumberOfCOlumns()) {
 			throw new MatrixIndexOutOfBoundsException('Trying to access column ' . $column . ' of a matrix with only ' . $this->getNumberOfCOlumns() . ' columns');
 		}
@@ -123,9 +123,10 @@ class Matrix {
 	 * @param integer $row
 	 * @param integer $column
 	 * @param float $value
+	 * @return void
 	 * @throws MatrixIndexOutOfBoundsException
 	 */
-	function setValueAtPosition($row, $column, $value) {
+	public function setValueAtPosition($row, $column, $value) {
 		if ($column > $this->getNumberOfCOlumns()) {
 			throw new MatrixIndexOutOfBoundsException('Trying to set column ' . $column . ' of a matrix with only ' . $this->getNumberOfCOlumns() . ' columns');
 		}
@@ -136,9 +137,9 @@ class Matrix {
 	}
 
 	/**
-	 *
+	 * @return string
 	 */
-	function __toString() {
+	public function __toString() {
 		$content = '';
 		foreach ($this->data as $i => $row) {
 			foreach ($row as $j => $value) {
@@ -163,7 +164,7 @@ class Matrix {
 		$newData = array();
 		foreach ($this->data as $row) {
 			$newRow = array();
-			foreach($row as $index => $value) {
+			foreach ($row as $index => $value) {
 				$newRow[] = $value * $vector->getIndex($index);
 			}
 			$newData[] = $newRow;
@@ -196,7 +197,7 @@ class Matrix {
 		if ($this->getNumberOfCOlumns() !== $matrix->getNumberOfCOlumns()) {
 			return FALSE;
 		}
-		foreach($this->data as $rowNumber => $row) {
+		foreach ($this->data as $rowNumber => $row) {
 			foreach ($row as $columnNumber => $value) {
 				if ($value != $matrix->getValueAtPosition($rowNumber, $columnNumber)) {
 					return FALSE;
@@ -219,13 +220,13 @@ class Matrix {
 			throw new GeneralMathException('Unable to calculate inverse of non-square matrix');
 		}
 		$matrix = clone($this);
-		$matrix2 = Matrix::identityMatrix($this->getNumberOfRows());
+		$matrix2 = self::identityMatrix($this->getNumberOfRows());
 		$solver = new GaussJordan();
 		$solver->solve($matrix, $matrix2);
 		return $matrix2;
 	}
 
-	// ********************* Rows used for various algorithms like GausJoran *********************
+		// ********************* Rows used for various algorithms like GausJoran *********************
 
 	/**
 	 * Expand a matrix into a new and bigger size. New elements will be initialize to the value of $value
@@ -245,12 +246,12 @@ class Matrix {
 		}
 
 		for ($i = 0; $i < $newNumberOfRows; $i++) {
-			$newData[$i] = array_fill(0,$newNumberOfColumns, $value);
+			$newData[$i] = array_fill(0, $newNumberOfColumns, $value);
 		}
 		$rowOffset = $addRowsAndColumnsBefore ? ($newNumberOfRows - $this->getNumberOfRows()) : 0;
 		$columnOffset = $addRowsAndColumnsBefore ? ($newNumberOfColumns - $this->getNumberOfColumns()) : 0;
 		foreach ($this->data as $rowNumber => $row) {
-			foreach($row as $columnNumber => $value) {
+			foreach ($row as $columnNumber => $value) {
 				$newData[$rowNumber + $rowOffset][$columnNumber + $columnOffset] = $value;
 			}
 		}
@@ -263,11 +264,10 @@ class Matrix {
 	 *
 	 * This us used by various algoriths, like Gauss-Jordan, to choose pivot element
 	 *
-	 * @todo: Refactor to allow specifying more that one exlude row/col
-	 *
-	 * @param integer|null $exclueRow
-	 * @param integer|null $exclueColumn
+	 * @param integer|null $excludeRow
+	 * @param integer|null $excludeColumn
 	 * @return float
+	 * @todo: Refactor to allow specifying more that one exlude row/col
 	 */
 	public function findBiggestValue($excludeRow = NULL, $excludeColumn = NULL) {
 		$biggestValue = 0.0;
@@ -299,8 +299,8 @@ class Matrix {
 	 *
 	 * This operation changes the actual object, and return itself in order to be able to chain it.
 	 *
-	 * @param $row1
-	 * @param $row2
+	 * @param integer $row1
+	 * @param integer $row2
 	 * @return Matrix
 	 */
 	public function interchangeRows($row1, $row2) {
@@ -328,7 +328,8 @@ class Matrix {
 		if ($row < 0 || $row > $this->getNumberOfRows()) {
 				throw new MatrixIndexOutOfBoundsException('Trying to modify the ' . $row . 'th row of a matrix with ' . $this->getNumberOfRows() . ' rows');
 		}
-		for ($l= 0; $l < $this->getNumberOfCOlumns(); $l++) {
+		$numberOfColumns = $this->getNumberOfColumns();
+		for ($l = 0; $l < $numberOfColumns; $l++) {
 			$this->data[$row][$l] = $this->data[$row][$l] * $number;
 		}
 		return $this;
@@ -350,7 +351,8 @@ class Matrix {
 		if ($rowToAddTo < 0 || $rowToAddTo > $this->getNumberOfRows()) {
 			throw new MatrixIndexOutOfBoundsException('Trying to modify the ' . $rowToAddTo . 'th row of a matrix with ' . $this->getNumberOfRows() . ' rows');
 		}
-		for ($l= 0; $l < $this->getNumberOfColumns(); $l++) {
+		$numberOfColumns = $this->getNumberOfColumns();
+		for ($l = 0; $l < $numberOfColumns; $l++) {
 			$this->data[$rowToAddTo][$l] = $this->data[$rowToAddTo][$l] + $this->data[$rowToMultiplyWith][$l] * $multiple;
 		}
 		return $this;

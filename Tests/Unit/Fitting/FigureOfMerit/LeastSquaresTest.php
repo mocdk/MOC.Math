@@ -3,7 +3,7 @@ namespace MOC\Math\Tests\Unit\Statistics\Math;
 
 use MOC\Math\GaussJordan;
 use MOC\Math\Matrix;
-use Niras\Meia\Statistics\Data\DataSeries;
+use MOC\Math\DataSeries;
 
 class LeastSquare extends \PHPUnit_Framework_TestCase {
 
@@ -11,10 +11,11 @@ class LeastSquare extends \PHPUnit_Framework_TestCase {
 	 * @test
 	 */
 	public function calculate() {
-		$data = new DataSeries(array(
+		$data = DataSeries::fromArray(array(
 			array(1.0, 1.0),
 			array(1.0, 2.0),
 		));
+
 
 	}
 }

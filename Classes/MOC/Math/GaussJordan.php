@@ -87,5 +87,6 @@ class GaussJordan {
 				}
 			}
 		} // End main loop over columns, and we're done!
+
 	}
 }

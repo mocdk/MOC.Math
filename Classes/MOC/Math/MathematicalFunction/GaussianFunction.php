@@ -57,11 +57,12 @@ class GaussianFunction implements MathematicalFunctionInterface  {
 		if ($this->peakHeight === NULL || $this->peakPosition === NULL || $this->width === NULL || $this->offset === NULL ) {
 			throw new MathematicalFunctionNotInitializedException();
 		}
-		return ($this->peakHeight * exp(-pow($x - $this->peakPosition, 2) / (2 * pow($this->width, 2)))) + $this->offset;
+		return ($this->peakHeight * exp( - pow($x - $this->peakPosition, 2) / (2 * pow($this->width, 2)))) + $this->offset;
 	}
 
 	/**
 	 * @param array $parameters
+	 * @return void
 	 */
 	public function setParameters(array $parameters) {
 		if (count($parameters) !== $this->getDegreesOfFreedom()) {

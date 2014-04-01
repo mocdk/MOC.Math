@@ -1,10 +1,10 @@
 <?php
 namespace MOC\Math\Fitting;
 
+use MOC\Math\DataSeries;
 use MOC\Math\GaussJordan;
 use MOC\Math\MathematicalFunction\LinearCombinationOfFunctions;
 use MOC\Math\Matrix;
-use Niras\Meia\Statistics\Data\DataSeries;
 use MOC\Math\Fitting\FigureOfMerit\LeastSquares;
 use MOC\Math\MathematicalFunction\MathematicalFunctionInterface;
 
@@ -35,18 +35,6 @@ use MOC\Math\MathematicalFunction\MathematicalFunctionInterface;
  * @package MOC\Math
  */
 class FittingEngine {
-
-	/**
-	 * Do the actual fitting
-	 *
-	 * @param DataSeries $data
-	 * @param MathematicalFunctionInterface $mathematicalFunction
-	 * @return float
-	 */
-	public function fitDataToMathematicalFunction(DataSeries $data, MathematicalFunctionInterface &$mathematicalFunction) {
-		$mathematicalFunction->setParameters(array(1.0, 0.2));
-		return 0.8;
-	}
 
 	/**
 	 * Do a fit of linear function
@@ -84,13 +72,14 @@ class FittingEngine {
 		$covar = Matrix::emptyMatrix($numberOfParameteresToFit, $numberOfParameteresToFit);
 		$beta = Matrix::emptyMatrix($numberOfParameteresToFit,1);
 
-		foreach ($data->getData() as $i => $point) {
+		/** @var $point \MOC\Math\Point  */
+		foreach($data as $i => $point) {
 
 				// Evaluate each of the basis functions in point X_i
 			for ($j = 0; $j < $numberOfParameters; $j++) {
-				$afunc[$j] = $mathematicalFunction->evaluateNthBasisFunctionAtPoint($point[0], $j);
+				$afunc[$j] = $mathematicalFunction->evaluateNthBasisFunctionAtPoint($point->getX(), $j);
 			}
-			$ym = $point[1];
+			$ym = $point->getY();
 			if ($numberOfParameteresToFit < $numberOfParameters) {
 				for ($j=0; $j < $numberOfParameters; $j++) {
 					if ($parametersToFitFor[$j] === FALSE) {
@@ -100,7 +89,13 @@ class FittingEngine {
 			}
 
 				// Calculate lower triangle of the Covariance matrix
-			$sig2i = 1.0 / pow($data->getErrorAtIndex($i),2);
+			$error = $point->getError();
+			if ($error == 0.00) {
+				$sigma = 1;
+			} else {
+				$sigma = $error;
+			}
+			$sig2i = 1.0 / pow($sigma,2);
 			$j = 0;
 			for ($l = 0; $l < $numberOfParameters; $l++) {
 				if ($parametersToFitFor[$l] === TRUE) {

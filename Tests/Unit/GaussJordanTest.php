@@ -1,5 +1,5 @@
 <?php
-namespace Niras\Meia\Tests\Unit\Statistics\Math;
+namespace MOC\Math\Tests\Unit\Statistics\Math;
 
 use MOC\Math\GaussJordan;
 use MOC\Math\Matrix;

@@ -43,7 +43,7 @@ class Polynomial implements LinearCombinationOfFunctions  {
 	 */
 	public function evaluateAtPoint($x) {
 		$sum = 0.0;
-		for ($j=0; $j <= $this->order; $j++) {
+		for ($j = 0; $j <= $this->order; $j++) {
 			$sum += $this->parameters[$j] * pow($x, $j);
 		}
 		return $sum;
@@ -75,7 +75,7 @@ class Polynomial implements LinearCombinationOfFunctions  {
 	/**
 	 * The internal parameters of function.
 	 *
-	 * @param array <float> $parameters
+	 * @param array<float> $parameters
 	 * @return void
 	 */
 	public function setParameters(array $parameters) {
@@ -87,6 +87,7 @@ class Polynomial implements LinearCombinationOfFunctions  {
 
 	/**
 	 * Return the name of this function
+	 *
 	 * @return string
 	 */
 	public function getName() {
@@ -105,15 +106,15 @@ class Polynomial implements LinearCombinationOfFunctions  {
 	/**
 	 * @return string
 	 */
-	function __toString() {
+	public function __toString() {
 		$precision = 4;
 		$output = 'y(x) = ' . round($this->parameters[0], $precision);
 		if ($this->order > 0) {
 			$output .= ' + ' . round($this->parameters[1], $precision) . 'x';
 		}
 		if ($this->order > 1) {
-			for ($j=2; $j <= $this->order; $j++) {
-				$output .= ' + ' . round($this->parameters[$j],$precision) . 'x^' . ($j);
+			for ($j = 2; $j <= $this->order; $j++) {
+				$output .= ' + ' . round($this->parameters[$j], $precision) . 'x^' . ($j);
 			}
 		}
 		return $output;

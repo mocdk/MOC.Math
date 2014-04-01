@@ -1,5 +1,5 @@
 <?php
-namespace Niras\Meia\Tests\Unit\Statistics\Math\MAthematicalFunction;
+namespace MOC\Math\Tests\Unit\Statistics\Math\MAthematicalFunction;
 
 use MOC\Math\MathematicalFunction\LinearFunction;
 

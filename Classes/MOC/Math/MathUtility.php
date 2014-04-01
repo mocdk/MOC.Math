@@ -1,7 +1,6 @@
 <?php
 namespace MOC\Math;
 
-use Niras\Meia\Statistics\Data\DataSeries;
 use MOC\Math\MathematicalFunction\MathematicalFunctionInterface;
 
 /**
@@ -25,7 +24,7 @@ class MathUtility {
 		$data = array();
 		foreach ($points as $x) {
 			$y = $mathematicalFunction->evaluateAtPoint($x);
-			$data[] = array($x,$y);
+			$data[] = new Point($x,$y);
 		}
 		return new DataSeries($data);
 	}

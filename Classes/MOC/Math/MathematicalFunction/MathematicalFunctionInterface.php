@@ -11,7 +11,7 @@ namespace MOC\Math\MathematicalFunction;
 interface MathematicalFunctionInterface {
 
 	/**
-	 * Return this function's degrees of freedom. This is the number of paramteres used for describing the function.
+	 * Return this function's degrees of freedom. This is the number of parameters used for describing the function.
 	 *
 	 * @return integer
 	 */
@@ -37,6 +37,7 @@ interface MathematicalFunctionInterface {
 
 	/**
 	 * Return the name of this function
+	 *
 	 * @return string
 	 */
 	public function getName();
@@ -48,5 +49,10 @@ interface MathematicalFunctionInterface {
 	 */
 	public function getParameters();
 
+	/**
+	 * Render this function as a string
+	 *
+	 * @return string
+	 */
 	public function __toString();
 }

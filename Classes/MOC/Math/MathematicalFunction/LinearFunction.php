@@ -13,7 +13,7 @@ namespace MOC\Math\MathematicalFunction;
 class LinearFunction extends Polynomial implements LinearCombinationOfFunctions  {
 
 	/**
-	 *
+	 * Constructor
 	 */
 	public function __construct() {
 		parent::__construct(1);
