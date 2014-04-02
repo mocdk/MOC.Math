@@ -59,4 +59,15 @@ class Point {
 		return $this->error;
 	}
 
+	/**
+	 * Return the error, but returned with 1.00 if the error is set to 0.00. Otherwise most algorithms will get a division by zero
+	 * @return float
+	 */
+	public function getStdDeviation() {
+		if ($this->error == 0.0) {
+			return 1.00;
+		}
+		return $this->error;
+	}
+
 }

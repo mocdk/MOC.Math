@@ -2,6 +2,7 @@
 namespace MOC\Math\Fitting\FigureOfMerit;
 
 use MOC\Math\MathematicalFunction\MathematicalFunctionInterface;
+use MOC\Math\DataSeries;
 
 class LeastSquares implements FigureOfMeritFunctionInterface {
 
@@ -12,8 +13,9 @@ class LeastSquares implements FigureOfMeritFunctionInterface {
 	 */
 	public function calculate(DataSeries $data, MathematicalFunctionInterface $mathematicalFunction) {
 		$squaredSum = 0.0;
-		foreach ($data->getData() as $dataPoint) {
-			$squaredSum += pow($dataPoint[1] - $mathematicalFunction->evaluateAtPoint($dataPoint[0]), 2);
+		/** @var $dataPoint \MOC\Math\Point */
+		foreach ($data as $dataPoint) {
+			$squaredSum += pow($dataPoint->getY() - $mathematicalFunction->evaluateAtPoint($dataPoint->getX()),2) / pow($dataPoint->getStdDeviation(), 2);
 		}
 		return $squaredSum;
 	}

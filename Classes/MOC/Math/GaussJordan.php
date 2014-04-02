@@ -42,6 +42,7 @@ class GaussJordan {
 			// find the pivot element by searching the entire matrix for its largest value, but excluding columns already reduced.
 		for ($i=0; $i < $n; $i++) {
 			$big = 0;
+			
 			for ($j = 0; $j < $n; $j++) {
 				if ($ipiv[$j] != 1) {
 					for ($k=0; $k < $n; $k++) {

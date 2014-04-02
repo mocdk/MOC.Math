@@ -2,6 +2,7 @@
 namespace MOC\Math\Fitting\FigureOfMerit;
 
 use MOC\Math\MathematicalFunction\MathematicalFunctionInterface;
+use MOC\Math\DataSeries;
 
 /**
  * Interface FigureOfMeritFunctionInterface
