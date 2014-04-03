@@ -1,7 +1,7 @@
 {
 	"name": "moc/math",
 	"type":"library",
-	"description": "Mathematical library for PHP. Performs",
+	"description": "Mathematical fitting library for PHP. Performs Linear and non-linear fitting of data. Includes classes for various Math used when fitting. Included a lot of linear algebra like Matrix and Vector algebra.",
 	"license":"MIT",
 	"authors": [
 		{
