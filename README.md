@@ -3,11 +3,42 @@ MOC.Math
 
 Math library for PHP. Include Matrix manipulation, equation solving and linear and un-linear fitting
 
-Some of the matrix calculations could also be done using the PHP lapack extensions, but this is a native PHP implementation
-which is bound to be slower, but does not require any external libraries.
+Some of the matrix calculations could also be done using the PHP lapack extensions.
+The MOC/Math package is a native PHP implementation which is bound to be slower, but does not require any external
+libraries.
 
 The library is not feature complete, and contains just enough to do linear and non-linear fitting. The algorithms are
- inspired by the very excellent book "Numerial recepies".
+inspired by the very excellent book "Numerial recepies".
+
+Installing
+----------
+
+Easiest way is to include it with composer in your exisint composer project.
+
+
+```sh
+composer require moc/math
+```
+
+And then start using is directly in your project.
+
+```php
+<?php
+require_once __DIR__ . '/vendor/autoload.php';
+use \MOC\Math\DataSeries;
+$data = DataSeries::fromArray(array(
+	array(0, 1.0, 0.1),
+	array(1, 1.5, 0.2),
+	array(2, 3.0, 0.09),
+	array(3, 4.8, 0.11),
+	array(4, 6.1, 0.15)
+));
+foreach($data as $point) {
+	printf("X: %4.2f\tY: %4.2f\n", $point->getX(), $point->getY());
+}
+```
+
+
 
 Matrix and vectors
 ------------------
@@ -120,23 +151,30 @@ the inverse of $matrixA.
 
 The algorithm uses partial pivoting.
 
-Linear regression
------------------
+Linear regression or linear least squares
+-----------------------------------------
 
 The main purpose of the Math package is to provide a fitting engine for fitting a dataset to a given model. Part of that
-is lineary regression where the data is fitted to a model that can be described as a linear combination of basisfunctions.
-The individual basisfunction can vary unlinearly with x, but can not be dependent on the parameters.
+is linear regression where the data is fitted to a model that can be described as a linear combination of basisfunctions.
+The individual basisfunction can vary unlinearly in x, but can not be dependent on the parameters.
 
 ##### Example:
 
 Fit a dataset to the function y(x) = a + bx + cx^2
 
-The individual basis function is 1, x and x^2 and we wish to find the parameters a, b, c that makes the model fit our
-data best.
+The individual basis function are 1, x and x^2 and we wish to find the parameters a, b, c that makes the model fit our
+data best using a least-squares linear regression.
 
 This can be done by calling using the LinearFitingEngine
 
 ```php
+<?php
+require_once __DIR__ . '/vendor/autoload.php';
+
+use \MOC\Math\DataSeries;
+use \MOC\Math\Fitting\LinearFittingEngine;
+use \MOC\Math\MathematicalFunction\Polynomial;
+
 $data = DataSeries::fromArray(array(
 	array(0, 1.0),
 	array(1, 1.5),
@@ -144,8 +182,8 @@ $data = DataSeries::fromArray(array(
 	array(3, 4.8),
 	array(4, 6.1)
 ));
-$functionToFitTo = new \MOC\Math\Polynomial(2);
-$fitter = new \MOC\Math\Fitting\LinearFittingEngine($data, $functionToFitTo);
+$functionToFitTo = new Polynomial(2);
+$fitter = new LinearFittingEngine($data, $functionToFitTo);
 $fitter->fit();
 print "Result: " . $functionToFitTo . PHP_EOL; // Will render the function with is parameters
 print 'Parameters: ' . PHP_EOL;
@@ -154,36 +192,53 @@ print 'Chi^: ' . $fitter->getChiSquared() . PHP_EOL;
 ```
 
 The actual solving is done with GaussJordan elimination with full pivoting. This has the drawback that the the matrix
-diagonalization might encounter zero pivot elements, resulting in singular matrixes. An exception will be thrown in that case.
+diagonalization might encounter zero pivot elements, resulting in a singular matrix. An exception will be thrown in this case.
 
-We could implement a singular value decomposition algorithm which is better at handling this.
+We could implement a singular value decomposition algorithm which is better at handling this. This is on the todo list.
 
-Note that the individual points could have errors set on them as well, and that would have affected the fitting algorithm,
+Note that the individual points could have errors set on them as well, and that will affect the fitting algorithm which takes
+this into account.
 
 ```php
-$data = DataSeries::fromArray(array(
+$data = \MOC\Math\DataSeries::fromArray(array(
 	array(0, 1.0, 0.1),
 	array(1, 1.5, 0.2),
 	array(2, 3.0, 0.09),
 	array(3, 4.8, 0.11),
 	array(4, 6.1, 0.15)
-	));
+));
 ```
 
-Non-linear regression
----------------------
+Non-linear regression or nonlinear least squares
+------------------------------------------------
 
 Fitting data to a model that is not a linear combination requires a different approach. Instead an iterative solution is
- required. This library also provides a solver for this kind of problems.
+required. Start out with one value of the parameters, and calculate Chi-squared. then using the Levenberg-Marquardt Method
+to alter the parameters in an intelligent way, recalculate Chi-squared. If the fit is better, then keep these parametes,
+otherwise try another set of parameters.
+Keep on untill chi-squared is reaching a minimum. The minimum might not be the global minimum, so its important to start
+out with initial values of the parameters close to the expected values.
+
+This library also provides a solver for this kind of problems.
 
 The solver is more error prone, and the function that needs fitting needs to be initialized with a "best guess" of the
-variables.
+variables, otherwise you risk reaching a local minimum which is not the best fit for the data.
 
 ### Example
 
-Fitting a dataset to a Gauss described by y(x) = a + b*exp(- ((x-c)/d)^2) is exactly this kind of problem.
+Fitting a dataseries to a Gauss described by y(x) = a + b*exp(- ((x-c)/d)^2) is exactly this kind of problem. It could
+also be a (finite) sum of Gaussians, but this example its just a single Gauss. The Gauss is implemented using the
+\MOC\Math\MathematicalFunction\GaussianFunction which implements the NonLinearCombinationOfFunctions interface required
+by the NonLinearFittingEngine:
 
 ```php
+<?php
+require_once __DIR__ . '/vendor/autoload.php';
+
+use \MOC\Math\DataSeries;
+use \MOC\Math\Fitting\NonLinearFittingEngine;
+use \MOC\Math\MathematicalFunction\GaussianFunction;
+
 $data = DataSeries::fromArray(array(
 	array(0.5, 0.25, 0.05),
 	array(1.13, 0.7, 0.10),
@@ -193,33 +248,39 @@ $data = DataSeries::fromArray(array(
 	array(3.0, 0.7, 0.001),
 	array(3.5, 0.2, 0.01)
 ));
-$functionToFitTo = new \MOC\Math\Gauss();
+$functionToFitTo = new GaussianFunction();
 
 //Do a best guess on the parameters on basis of the dataset.
 $bestGuess = array (0, 1.8, 1.8, 1);
 $functionToFitTo->setParameters($bestGuess);
 
 //In this example, we only solve for the b,c and d parameters, we keep the a fixed.
-$fitter = new NonLinearFittingEngine($data, $fittedFunction, array(FALSE, TRUE, TRUE, TRUE));
+$fitter = new NonLinearFittingEngine($data, $functionToFitTo, array(FALSE, TRUE, TRUE, TRUE));
 $fitter->fit();
 
 print 'Result: ' . $functionToFitTo . PHP_EOL; // Will render the function with is parameters
 print 'Parameters: ' . PHP_EOL;
 print_r($functionToFitTo->getParameters()) . PHP_EOL;
 print 'Chi^2: ' . $fitter->getChiSquared() . PHP_EOL;
+print 'Iterations: ' . $fitter->getNumberOfIterations() . PHP_EOL;
 ```
 
 Evaluating functions in ranges
 ------------------------------
 
-The library contains some utility functions for evaluating function in an interval, usefull when visualizing data.
+The library contains some utility functions for evaluating function in an interval, useful when visualizing data.
 
 ```php
+<?php
+require_once __DIR__ . '/vendor/autoload.php';
+use \MOC\Math\DataSeries;
+use \MOC\Math\MathematicalFunction\Polynomial;
+
 $function = new \MOC\Math\Polynomial(2);
-$function->setParameters(array(0.00, 1, 1);
+$function->setParameters(array(0.00, 1, 1));
 $data = \MOC\Math\MathUtility::evaluateFunctionInInterval($function, -2.0, 2.0, 100); //Evalute from -2 to 2 in 100 steps
 
 foreach($data as $point) {
-	sprintf("X: %4.2f\tY: %4.2f", $point->getX(). $point->getY());
+	printf("X: %4.2f\tY: %4.2f\n", $point->getX(), $point->getY());
 }
 ```
