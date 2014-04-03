@@ -1,5 +1,5 @@
 {
-	"name": "MOC/Math",
+	"name": "moc/math",
 	"type":"library",
 	"description": "Mathematical library for PHP. Performs",
 	"version":null,
