@@ -2,7 +2,7 @@
 	"name": "moc/math",
 	"type":"library",
 	"description": "Mathematical library for PHP. Performs",
-	"version":null,
+	"license":"MIT",
 	"authors": [
 		{
 			"name": "Jan-Erik Revsbech",
