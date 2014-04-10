@@ -13,7 +13,7 @@ inspired by the very excellent book "Numerial recepies".
 Installing
 ----------
 
-Easiest way is to include it with composer in your exisint composer project.
+Easiest way is to include it with composer in your existing composer project.
 
 
 ```sh
