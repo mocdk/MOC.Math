@@ -33,7 +33,7 @@ $data = DataSeries::fromArray(array(
 	array(3, 4.8, 0.11),
 	array(4, 6.1, 0.15)
 ));
-foreach($data as $point) {
+foreach ($data as $point) {
 	printf("X: %4.2f\tY: %4.2f\n", $point->getX(), $point->getY());
 }
 ```
@@ -53,7 +53,7 @@ $matrix = new Matrix(array(
 ));
 ```
 
-The Matrix also has tro factory classes for creating empty and identity classes
+The Matrix also has two factory classes for creating empty and identity classes
 
 ```php
  $identity = Matrix::identity(2)
@@ -91,7 +91,7 @@ To create a point x=0, y=1 with an (optional) error of 0.5, use this
 $point = new \MOC\Math\Point(array(0.00, 1.00, 0.5);
 ```
 
-A DataSeries object is used for containing a series of datapoints. Its constructor takes an array of Point objects, but
+A DataSeries object is used for containing a series of datapoints. It´s constructor takes an array of Point objects, but
 it also contains convenient factory methods for creating DataSeries from arrays.
 
 ```php
@@ -250,11 +250,11 @@ $data = DataSeries::fromArray(array(
 ));
 $functionToFitTo = new GaussianFunction();
 
-//Do a best guess on the parameters on basis of the dataset.
+// Do a best guess on the parameters on basis of the dataset.
 $bestGuess = array (0, 1.8, 1.8, 1);
 $functionToFitTo->setParameters($bestGuess);
 
-//In this example, we only solve for the b,c and d parameters, we keep the a fixed.
+// In this example, we only solve for the b,c and d parameters, we keep the a fixed.
 $fitter = new NonLinearFittingEngine($data, $functionToFitTo, array(FALSE, TRUE, TRUE, TRUE));
 $fitter->fit();
 
@@ -278,9 +278,9 @@ use \MOC\Math\MathematicalFunction\Polynomial;
 
 $function = new \MOC\Math\Polynomial(2);
 $function->setParameters(array(0.00, 1, 1));
-$data = \MOC\Math\MathUtility::evaluateFunctionInInterval($function, -2.0, 2.0, 100); //Evalute from -2 to 2 in 100 steps
+$data = \MOC\Math\MathUtility::evaluateFunctionInInterval($function, -2.0, 2.0, 100); // Evalute from -2 to 2 in 100 steps
 
-foreach($data as $point) {
+foreach ($data as $point) {
 	printf("X: %4.2f\tY: %4.2f\n", $point->getX(), $point->getY());
 }
 ```
